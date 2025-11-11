@@ -1,0 +1,25 @@
+FROM ubuntu:22.04
+
+RUN apt-get update && apt-get install -y curl vim
+RUN mkdir -p /root/installs
+##curl -O https://repo.anaconda.com/archive/Anaconda3-2025.06-0-Linux-x86_64.sh
+COPY Anaconda3-2025.06-0-Linux-x86_64.sh /root/installs/Anaconda3-2025.06-0-Linux-x86_64.sh
+RUN bash /root/installs/Anaconda3-2025.06-0-Linux-x86_64.sh -b -p /root/anaconda3 && eval "$(/root/anaconda3/bin/conda shell.bash hook)" && conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/main && conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/r && conda config --set auto_activate_base false
+
+RUN rm -rf /root/installs 
+
+WORKDIR /root/setup
+COPY environment_base.yml environment.yml
+RUN eval "$(/root/anaconda3/bin/conda shell.bash hook)" && conda env create -f environment.yml
+
+#COPY mount/cqr-faq /root/projects/cqr-faq/
+#RUN eval "$(/root/anaconda3/bin/conda shell.bash hook)" && conda activate mywb1 && pip install -r requirements.txt 
+
+
+#CMD ["/bin/bash"]
+COPY startScript.sh startScript.sh 
+RUN chmod 700 startScript.sh
+COPY environment_update.yml environment.yml
+RUN eval "$(/root/anaconda3/bin/conda shell.bash hook)" && conda env update -f environment.yml 
+WORKDIR /root/jupyter
+CMD ["/bin/bash","-c", "/root/setup/startScript.sh"]
