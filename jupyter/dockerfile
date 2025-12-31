@@ -21,5 +21,9 @@ COPY startScript.sh startScript.sh
 RUN chmod 700 startScript.sh
 COPY environment_update.yml environment.yml
 RUN eval "$(/root/anaconda3/bin/conda shell.bash hook)" && conda env update -f environment.yml 
+
+COPY environment_update2.yml environment.yml
+RUN eval "$(/root/anaconda3/bin/conda shell.bash hook)" && conda env update -f environment.yml
+
 WORKDIR /root/jupyter
 CMD ["/bin/bash","-c", "/root/setup/startScript.sh"]

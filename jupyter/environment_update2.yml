@@ -1,0 +1,9 @@
+name: mywb1
+channels:
+  - defaults
+dependencies:
+  - pip
+  - anyio
+  - python=3.12.12    
+  - pip:
+      - Hello-World-Package
